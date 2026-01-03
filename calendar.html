@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trip Planning Interface</title>
+    <link href="trip planning.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            padding: 20px;
+            animation: gradientShift 15s ease infinite;
+            background-size: 200% 200%;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Floating graphics */
+        .floating-graphic {
+            position: fixed;
+            opacity: 0.1;
+            animation: floatGraphic 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        @keyframes floatGraphic {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-50px) rotate(5deg);
+            }
+        }
+        
+        .graphic-1 {
+            top: 10%;
+            left: 5%;
+            font-size: 100px;
+            animation-delay: 0s;
+        }
+        
+        .graphic-2 {
+            top: 60%;
+            right: 8%;
+            font-size: 120px;
+            animation-delay: 2s;
+        }
+        
+        .graphic-3 {
+            bottom: 15%;
+            left: 10%;
+            font-size: 90px;
+            animation-delay: 4s;
+        }
+        
+        .graphic-4 {
+            top: 30%;
+            right: 15%;
+            font-size: 80px;
+            animation-delay: 1s;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '✈️';
+            position: absolute;
+            left: -80px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 60px;
+            animation: planeFly 3s ease-in-out infinite;
+        }
+        
+        @keyframes planeFly {
+            0%, 100% {
+                transform: translateY(-50%) translateX(0);
+            }
+            50% {
+                transform: translateY(-50%) translateX(20px);
+            }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+        }
+        
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 20px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: scaleIn 0.6s ease;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: #64748b;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+        
+        .planner-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: scaleIn 0.6s ease;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .month-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .month-navigation::before {
+            content: '🌍';
+            position: absolute;
+            right: 20px;
+            font-size: 50px;
+            opacity: 0.2;
+            animation: rotate 10s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .nav-arrow {
+            background: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .nav-arrow:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+        
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
+        
+        .month-display {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 15px;
+        }
+        
+        .weekday-header {
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+            padding: 15px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .calendar-day {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+        
+        .calendar-day.empty {
+            opacity: 0.3;
+            cursor: default;
+        }
+        
+        .calendar-day::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .calendar-day:not(.empty):hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            border-color: #667eea;
+        }
+        
+        .calendar-day:not(.empty):hover::before {
+            opacity: 0.1;
+        }
+        
+        .day-number {
+            position: relative;
+            z-index: 2;
+            font-weight: 600;
+            color: #334155;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        
+        .calendar-day.has-trip {
+            background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+            border: 2px solid #667eea;
+            animation: pulse 2s ease infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+            }
+        }
+        
+        .calendar-day.has-trip:hover {
+            animation: none;
+            transform: translateY(-12px) scale(1.08);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+        }
+        
+        .activity-count {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            z-index: 3;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            animation: bounce 2s ease infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .trip-thumbnail {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin: 8px 0;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover .trip-thumbnail {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .trip-destination {
+            position: relative;
+            z-index: 2;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        
+        .trip-badge {
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .trip-badge.leisure {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .trip-badge.adventure {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(250, 112, 154, 0.4);
+        }
+        
+        .trip-badge.business {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #1e293b;
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.4);
+        }
+        
+        .trip-badge.culture {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #1e293b;
+            box-shadow: 0 4px 15px rgba(252, 182, 159, 0.4);
+        }
+        
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+        
+        .calendar-day::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.5),
+                transparent
+            );
+            transform: translateX(-100%);
+            animation: shimmer 3s infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header::before {
+                display: none;
+            }
+            
+            .planner-card {
+                padding: 20px;
+            }
+            
+            .calendar-grid {
+                gap: 8px;
+            }
+            
+            .trip-thumbnail {
+                height: 60px;
+            }
+            
+            .month-display {
+                font-size: 1.3rem;
+            }
+            
+            .stat-card {
+                padding: 15px 20px;
+            }
+            
+            .stat-number {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Graphics -->
+    <div class="floating-graphic graphic-1">🗾</div>
+    <div class="floating-graphic graphic-2">🗼</div>
+    <div class="floating-graphic graphic-3">🏔️</div>
+    <div class="floating-graphic graphic-4">🏖️</div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>✈️My Travel Calendar</h1>
+        
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTrips">0</div>
+                <div class="stat-label">Total Trips</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="countriesVisited">0</div>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalActivities">0</div>
+                <div class="stat-label">Activities</div>
+            </div>
+        </div>
+        
+        <div class="planner-card">
+            <div class="month-navigation">
+                <button class="nav-arrow" onclick="previousMonth()">←</button>
+                <div class="month-display" id="monthDisplay"></div>
+                <button class="nav-arrow" onclick="nextMonth()">→</button>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid">
+                <div class="weekday-header">Sun</div>
+                <div class="weekday-header">Mon</div>
+                <div class="weekday-header">Tue</div>
+                <div class="weekday-header">Wed</div>
+                <div class="weekday-header">Thu</div>
+                <div class="weekday-header">Fri</div>
+                <div class="weekday-header">Sat</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        
+        // Comprehensive trip data with various destinations
+        const trips = {
+            // 2024 trips
+            '2024-0-15': { destination: 'Tokyo', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop' },
+            '2024-0-16': { destination: 'Tokyo', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop' },
+            '2024-0-17': { destination: 'Tokyo', type: 'culture', activities: 6, image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&h=300&fit=crop' },
+            
+            '2024-1-10': { destination: 'Seoul', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop' },
+            '2024-1-11': { destination: 'Seoul', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop' },
+            '2024-1-12': { destination: 'Seoul', type: 'culture', activities: 3, image: 'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=400&h=300&fit=crop' },
+            
+            '2024-2-5': { destination: 'Paris', type: 'leisure', activities: 4, image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop' },
+            '2024-2-6': { destination: 'Paris', type: 'leisure', activities: 5, image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop' },
+            '2024-2-7': { destination: 'Paris', type: 'leisure', activities: 3, image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=400&h=300&fit=crop' },
+            
+            '2024-3-12': { destination: 'Sydney', type: 'adventure', activities: 4, image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop' },
+            '2024-3-13': { destination: 'Sydney', type: 'adventure', activities: 3, image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop' },
+            '2024-3-14': { destination: 'Sydney', type: 'adventure', activities: 5, image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&h=300&fit=crop' },
+            
+            '2024-4-20': { destination: 'New Zealand', type: 'adventure', activities: 6, image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop' },
+            '2024-4-21': { destination: 'New Zealand', type: 'adventure', activities: 5, image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop' },
+            '2024-4-22': { destination: 'New Zealand', type: 'adventure', activities: 4, image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop' },
+            
+            '2024-5-8': { destination: 'New York', type: 'business', activities: 3, image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop' },
+            '2024-5-9': { destination: 'New York', type: 'business', activities: 4, image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop' },
+            '2024-5-10': { destination: 'New York', type: 'business', activities: 2, image: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop' },
+            
+            '2024-6-15': { destination: 'San Francisco', type: 'business', activities: 3, image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop' },
+            '2024-6-16': { destination: 'San Francisco', type: 'business', activities: 4, image: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=300&fit=crop' },
+            
+            '2024-7-10': { destination: 'Beijing', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400&h=300&fit=crop' },
+            '2024-7-11': { destination: 'Beijing', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400&h=300&fit=crop' },
+            '2024-7-12': { destination: 'Beijing', type: 'culture', activities: 3, image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?w=400&h=300&fit=crop' },
+            
+            '2024-8-5': { destination: 'Mumbai', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=400&h=300&fit=crop' },
+            '2024-8-6': { destination: 'Mumbai', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=400&h=300&fit=crop' },
+            '2024-8-7': { destination: 'Mumbai', type: 'culture', activities: 3, image: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?w=400&h=300&fit=crop' },
+            
+            '2024-9-18': { destination: 'Sri Lanka', type: 'leisure', activities: 4, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
+            '2024-9-19': { destination: 'Sri Lanka', type: 'leisure', activities: 5, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
+            '2024-9-20': { destination: 'Sri Lanka', type: 'leisure', activities: 3, image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop' },
+            
+            '2024-10-10': { destination: 'Switzerland', type: 'adventure', activities: 5, image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=400&h=300&fit=crop' },
+            '2024-10-11': { destination: 'Switzerland', type: 'adventure', activities: 6, image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=400&h=300&fit=crop' },
+            '2024-10-12': { destination: 'Switzerland', type: 'adventure', activities: 4, image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?w=400&h=300&fit=crop' },
+            
+            '2024-11-5': { destination: 'Gujarat', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&h=300&fit=crop' },
+            '2024-11-6': { destination: 'Gujarat', type: 'culture', activities: 3, image: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=400&h=300&fit=crop' },
+            
+            // 2025 trips
+            '2025-0-20': { destination: 'Kyoto', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop' },
+            '2025-0-21': { destination: 'Kyoto', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop' },
+            '2025-0-22': { destination: 'Kyoto', type: 'culture', activities: 6, image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop' },
+            
+            // 2026 trips
+            '2026-0-5': { destination: 'Barcelona', type: 'leisure', activities: 4, image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop' },
+            '2026-0-6': { destination: 'Barcelona', type: 'leisure', activities: 5, image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop' },
+            '2026-0-7': { destination: 'Barcelona', type: 'leisure', activities: 3, image: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=300&fit=crop' },
+            
+            '2025-2-15': { destination: 'Tamil Nadu', type: 'culture', activities: 4, image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=400&h=300&fit=crop' },
+            '2025-2-16': { destination: 'Tamil Nadu', type: 'culture', activities: 5, image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=400&h=300&fit=crop' },
+            '2025-2-17': { destination: 'Tamil Nadu', type: 'culture', activities: 3, image: 'https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=400&h=300&fit=crop' },
+        };
+        
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'];
+        
+        function getDaysInMonth(month, year) {
+            return new Date(year, month + 1, 0).getDate();
+        }
+        
+        function getFirstDayOfMonth(month, year) {
+            return new Date(year, month, 1).getDay();
+        }
+        
+        function updateStats() {
+            const totalTrips = new Set(Object.values(trips).map(t => t.destination)).size;
+            const countriesMap = {
+                'Tokyo': 'Japan', 'Kyoto': 'Japan', 'Seoul': 'South Korea', 'Beijing': 'China',
+                'Paris': 'France', 'Sydney': 'Australia', 'New Zealand': 'New Zealand',
+                'New York': 'USA', 'San Francisco': 'USA', 'Mumbai': 'India', 'Gujarat': 'India',
+                'Tamil Nadu': 'India', 'Sri Lanka': 'Sri Lanka', 'Switzerland': 'Switzerland'
+            };
+            const countries = new Set(Object.values(trips).map(t => countriesMap[t.destination]));
+            const totalActivities = Object.values(trips).reduce((sum, t) => sum + t.activities, 0);
+            
+            document.getElementById('totalTrips').textContent = totalTrips;
+            document.getElementById('countriesVisited').textContent = countries.size;
+            document.getElementById('totalActivities').textContent = totalActivities;
+        }
+        
+        function renderCalendar() {
+            const monthDisplay = document.getElementById('monthDisplay');
+            const calendarGrid = document.getElementById('calendarGrid');
+            
+            monthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            // Clear previous calendar days (keep headers)
+            const headers = calendarGrid.querySelectorAll('.weekday-header');
+            calendarGrid.innerHTML = '';
+            headers.forEach(header => calendarGrid.appendChild(header));
+            
+            const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+            const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+            
+            // Add empty cells for days before the first day of month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                const tripKey = `${currentYear}-${currentMonth}-${day}`;
+                const trip = trips[tripKey];
+                
+                if (trip) {
+                    dayElement.classList.add('has-trip');
+                    dayElement.innerHTML = `
+                        <div class="activity-count">${trip.activities}</div>
+                        <div class="day-number">${day}</div>
+                        <img src="${trip.image}" class="trip-thumbnail" alt="${trip.destination}">
+                        <div class="trip-destination">${trip.destination}</div>
+                        <span class="trip-badge ${trip.type}">${trip.type}</span>
+                    `;
+                } else {
+                    dayElement.innerHTML = `<div class="day-number">${day}</div>`;
+                }
+                
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+        
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+                if (currentYear < 2020) {
+                    currentYear = 2020;
+                    currentMonth = 0;
+                }
+            }
+            renderCalendar();
+        }
+        
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendar();
+        }
+        
+        // Initial render
+        updateStats();
+        renderCalendar();
+    </script>
+</body>
+</html>

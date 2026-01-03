@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Search</title>
+    <link rel="stylesheet" href="city searching.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1> Your Next Destination</h1>
+    
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-bar">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Search cities by name or keyword..."
+                        aria-label="Search cities"
+                    >
+                </div>
+            </div>
+
+            <div class="filters-section">
+                <div class="filter-group">
+                    <label class="filter-label" for="countryFilter">Country</label>
+                    <select class="filter-select" id="countryFilter">
+                        <option value="">All Countries</option>
+                        <option value="USA">United States</option>
+                        <option value="UK">United Kingdom</option>
+                        <option value="France">France</option>
+                        <option value="Japan">Japan</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Italy">Italy</option>
+                        <option value="Spain">Spain</option>
+                        <option value="Brazil">Brazil</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="costFilter">Cost Index</label>
+                    <select class="filter-select" id="costFilter">
+                        <option value="">All Budget Levels</option>
+                        <option value="low">Budget Friendly ($)</option>
+                        <option value="medium">Moderate ($$)</option>
+                        <option value="high">Premium ($$$)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label" for="popularityFilter">Popularity</label>
+                    <select class="filter-select" id="popularityFilter">
+                        <option value="">All Ratings</option>
+                        <option value="high">4.5+ Stars</option>
+                        <option value="medium">4.0+ Stars</option>
+                        <option value="low">3.5+ Stars</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <div style="display: flex; gap: 24px; align-items: flex-start;">
+            <!-- Results Section -->
+            <section class="results-section" style="flex: 1;">
+                <div class="results-header">
+                    <h2>Available Cities</h2>
+                    <span class="results-count" id="resultsCount">Showing 0 cities</span>
+                </div>
+
+                <div class="cities-grid" id="citiesGrid">
+                    <!-- City cards will be dynamically inserted here -->
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-state-icon">🔍</div>
+                    <p class="empty-state-text">No cities found matching your criteria</p>
+                </div>
+
+                <!-- Loading State -->
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="loading-spinner"></div>
+                    <p>Loading cities...</p>
+                </div>
+            </section>
+
+            <!-- Trip Summary Panel -->
+            <aside class="trip-summary" id="tripSummary" style="width: 350px;">
+                <h3>📋 Your Trip</h3>
+                <ul class="trip-cities-list" id="tripCitiesList">
+                    <!-- Added cities will appear here -->
+                </ul>
+                <div class="trip-summary-footer">
+                    <span class="trip-count" id="tripCount">0 cities added</span>
+                    <button class="add-button primary" id="clearTripBtn" style="width: auto; padding: 8px 16px; font-size: 0.9rem;">
+                        Clear All
+                    </button>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="city search interface.js"></script>
+</body>
+</html>
