@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Travel Dashboard</title>
+  <title>Travelmania | Home</title>
   
-  <!-- Font from Google -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root {
-      --primary: #6366f1; /* Indigo */
-      --secondary: #a855f7; /* Purple */
+      --primary: #6366f1; 
+      --secondary: #a855f7; 
       --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
       --glass-bg: rgba(255, 255, 255, 0.7);
       --glass-border: rgba(255, 255, 255, 0.5);
@@ -19,19 +19,12 @@
       --text-light: #64748b;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
 
     body {
-      height: 100vh;
-      width: 100vw;
+      height: 100vh; width: 100vw;
       background: var(--bg-gradient);
-      display: flex;
-      overflow: hidden; 
+      display: flex; overflow: hidden; 
     }
 
     /* --- SIDEBAR --- */
@@ -39,297 +32,128 @@
       width: 260px;
       background: rgba(255, 255, 255, 0.4);
       backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
       border-right: 1px solid var(--glass-border);
-      display: flex;
-      flex-direction: column;
-      padding: 30px 20px;
-      z-index: 10;
+      display: flex; flex-direction: column;
+      padding: 30px 20px; z-index: 10;
     }
 
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin-bottom: 50px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      letter-spacing: -0.5px;
-    }
+    .logo { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 50px; display: flex; align-items: center; gap: 10px; }
 
     .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      padding: 16px;
-      color: var(--text-light);
-      text-decoration: none;
-      border-radius: 14px;
-      transition: all 0.3s ease;
-      font-weight: 500;
-      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 15px; padding: 16px; color: var(--text-light);
+      text-decoration: none; border-radius: 14px; transition: all 0.3s ease; font-weight: 500; margin-bottom: 8px;
     }
 
     .menu-item:hover, .menu-item.active {
-      background: white;
-      color: var(--primary);
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
-      transform: translateX(5px);
-    }
-
-    .logout-btn {
-      margin-top: auto;
-      color: #ef4444;
-      cursor: pointer;
-    }
-    .logout-btn:hover {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .search-btn {
-      background: rgba(255, 255, 255, 0.6);
-      color: var(--primary);
-      border: none;
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      transition: all 0.2s;
-    }
-    .search-btn:hover {
-      background: white;
-      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15);
+      background: white; color: var(--primary);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.15); transform: translateX(5px);
     }
 
     /* --- MAIN CONTENT --- */
     .main-content {
-      flex: 1;
-      padding: 40px;
-      overflow-y: auto;
-      display: grid;
-      grid-template-columns: 2.5fr 1fr; /* Adjusted ratio */
-      grid-template-rows: auto 1fr;
-      gap: 30px;
+      flex: 1; padding: 30px 40px;
+      overflow-y: auto; display: grid;
+      grid-template-columns: 2.5fr 1fr;
+      grid-template-rows: auto auto 1fr;
+      gap: 25px;
     }
 
-    /* HEADER */
-    .header {
+    /* --- TOP HEADER (Search & Profile) --- */
+    .top-nav {
       grid-column: 1 / -1;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 10px;
     }
 
-    .header h1 {
-      color: var(--text-dark);
-      font-size: 2.2rem;
-      font-weight: 700;
+    .search-container {
+      position: relative;
+      width: 400px;
+      cursor: pointer;
     }
 
-    .date-badge {
-      background: rgba(255,255,255,0.6);
-      padding: 10px 20px;
-      border-radius: 50px;
-      font-size: 0.95rem;
-      color: var(--primary);
-      font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-
-    /* CARDS COMMON STYLE */
-    .card {
+    .search-bar-mock {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
       background: var(--glass-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(10px);
       border: 1px solid var(--glass-border);
-      border-radius: 28px;
-      padding: 30px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease;
-    }
-
-    .card-title {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--text-dark);
-      margin-bottom: 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    /* HERO CARD (Gradient) */
-    .hero-card {
-      grid-column: 1 / 2;
-      background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-      color: white;
-      position: relative;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 260px;
-      border: none;
-    }
-
-    .hero-card h2 { font-size: 2.2rem; margin-bottom: 15px; z-index: 2; line-height: 1.2; }
-    .hero-card p { opacity: 0.95; margin-bottom: 30px; z-index: 2; max-width: 70%; font-size: 1.05rem; }
-    
-    .cta-btn {
-      background: white;
-      color: var(--primary);
-      border: none;
-      padding: 14px 35px;
       border-radius: 50px;
-      font-weight: 700;
+      color: var(--text-light);
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      display: flex; align-items: center;
+    }
+
+    .search-bar-mock:hover {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.2);
+    }
+
+    .search-icon { position: absolute; left: 18px; color: var(--primary); }
+
+    .user-profile-trigger {
+      display: flex; align-items: center; gap: 12px;
+      padding: 5px 15px 5px 5px;
+      background: var(--glass-bg);
+      border-radius: 50px;
+      border: 1px solid var(--glass-border);
       cursor: pointer;
-      width: fit-content;
-      z-index: 2;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .cta-btn:hover { transform: scale(1.05); box-shadow: 0 15px 30px rgba(0,0,0,0.25); }
-
-    /* Decorative Shapes */
-    .circle { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.15); }
-    .c1 { width: 250px; height: 250px; top: -80px; right: -50px; }
-    .c2 { width: 120px; height: 120px; bottom: 30px; right: 120px; }
-
-    /* UPCOMING TRIPS (Right Sidebar) */
-    .trips-card {
-      grid-column: 2 / 3;
-      grid-row: 2 / 4;
-      display: flex;
-      flex-direction: column;
+      transition: 0.3s;
     }
 
-    .trip-item {
-      display: flex;
-      gap: 18px;
-      margin-bottom: 25px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-      transition: transform 0.2s;
-      cursor: pointer;
-    }
-    .trip-item:hover { transform: translateX(5px); }
-    .trip-item:last-child { border: none; }
-
-    .trip-date-box {
-      background: #eef2ff;
-      color: var(--primary);
-      width: 65px;
-      height: 65px;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .trip-date-box b { font-size: 1.4rem; line-height: 1; }
-    .trip-date-box span { font-size: 0.75rem; text-transform: uppercase; font-weight: 600; }
-
-    .trip-info h4 { color: var(--text-dark); margin-bottom: 5px; font-size: 1rem; }
-    .trip-info p { font-size: 0.85rem; color: var(--text-light); margin-bottom: 6px;}
-    
-    .status-badge {
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 6px;
-      background: #dcfce7;
-      color: #15803d;
-      font-weight: 600;
-      display: inline-block;
-    }
-
-    /* RECOMMENDATIONS (Image Grid) */
-    .reco-card {
-      grid-column: 1 / 2;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .destinations-grid {
-      display: flex;
-      gap: 20px;
-      height: 100%;
-    }
-
-    .dest-item {
-      flex: 1;
-      height: 200px;
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.3s ease;
-    }
-
-    .dest-item:hover {
+    .user-profile-trigger:hover {
+      background: white;
       transform: scale(1.05);
     }
 
-    .dest-content {
-      text-align: center;
-      color: white;
-      z-index: 2;
+    .profile-img {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary);
     }
 
-    .tourist-icon {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    .profile-name { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); }
+
+    /* Dashboard Header */
+    .dashboard-header { grid-column: 1 / -1; margin-top: 10px; }
+    .dashboard-header h1 { font-size: 2.2rem; color: var(--text-dark); }
+
+    /* Cards */
+    .card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 28px; padding: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
     }
 
-    .dest-name {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 5px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    .hero-card {
+      grid-column: 1 / 2;
+      background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
+      color: white; border: none; min-height: 240px;
+      display: flex; flex-direction: column; justify-content: center;
     }
 
-    .dest-desc {
-      font-size: 1rem;
-      opacity: 0.9;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    .cta-btn {
+      background: white; color: var(--primary); border: none;
+      padding: 12px 30px; border-radius: 50px; font-weight: 700;
+      cursor: pointer; margin-top: 20px; width: fit-content;
     }
 
-    /* Budget Bar */
-    .budget-section { margin-top: auto; }
-    .budget-bar-bg {
-      width: 100%;
-      height: 12px;
-      background: #f1f5f9;
-      border-radius: 10px;
-      margin: 15px 0 10px 0;
-      overflow: hidden;
-    }
-    .budget-bar-fill {
-      height: 100%;
-      width: 65%;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      border-radius: 10px;
-    }
-    .budget-stats {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.85rem;
-      color: var(--text-light);
-      font-weight: 500;
+    .sidebar-budget {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 15px; padding: 15px; margin: 20px 0;
+      cursor: pointer; text-align: center;
     }
 
-    /* Icons */
-    svg { width: 22px; height: 22px; }
+    .dest-item { flex: 1; height: 150px; border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; cursor: pointer; transition: 0.3s; font-weight: bold;}
+    .dest-item:hover { transform: translateY(-5px); }
 
+    /* Layout tweaks */
+    .destinations-grid { display: flex; gap: 15px; margin-top: 15px; }
   </style>
 </head>
 <body>
@@ -337,163 +161,74 @@
   <!-- Sidebar -->
   <nav class="sidebar">
     <div class="logo">
-      <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path></svg>
-      TravelApp
+      <i class="fa-solid fa-paper-plane"></i> TravelApp
     </div>
     
-    <a href="#" class="menu-item active">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-      Dashboard
-    </a>
-    <a href="my trip.html" class="menu-item">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      My Trips
-    </a>
-    <a href="#" class="menu-item">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-      Budget
-    </a>
-    <a href="calendar.html" class="menu-item">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-      Calendar
-    </a>
+    <a href="#" class="menu-item active"><i class="fa-solid fa-house"></i> Dashboard</a>
+    <a href="my trip.html" class="menu-item"><i class="fa-solid fa-map"></i> My Trips</a>
+    <a href="trip budget.html" class="menu-item"><i class="fa-solid fa-wallet"></i> Budget</a>
+    <a href="calendar.html" class="menu-item"><i class="fa-solid fa-calendar-days"></i> Calendar</a>
 
-    <div class="menu-item logout-btn" onclick="logout()">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-      Logout
+    <div class="sidebar-budget" onclick="location.href='trip budget.html'">
+      <p style="font-size: 0.75rem; opacity: 0.8;">Current Budget</p>
+      <p style="font-weight: 700;">₹40,000 / ₹60,000</p>
+    </div>
+
+    <div class="menu-item" style="margin-top:auto; color: #ef4444; cursor:pointer;">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
     </div>
   </nav>
 
   <!-- Main Area -->
   <main class="main-content">
     
-    <header class="header">
-      <div>
-        <h1>Welcome back, Traveler</h1>
-        <p style="color:var(--text-light); font-size:1.1rem;">Where do you want to go today?</p>
+    <!-- TOP NAVIGATION: Search and Profile -->
+    <header class="top-nav">
+      <div class="search-container" onclick="location.href='city search.html'">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <div class="search-bar-mock">Search for cities, flights, or hotels...</div>
       </div>
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <button class="search-btn">🔍 Search</button>
-        <div class="date-badge">Jan 03, 2026</div>
+
+      <div class="user-profile-trigger" onclick="location.href='profile.html'">
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80" class="profile-img" alt="User">
+        <span class="profile-name">Kanishka</span>
       </div>
     </header>
 
-    <!-- 1. Hero / Create Trip -->
+    <div class="dashboard-header">
+      <h1>Welcome Back, Traveler!</h1>
+      <p style="color: var(--text-light);">Ready to explore a new destination?</p>
+    </div>
+
+    <!-- 1. Hero Card -->
     <div class="card hero-card">
-      <div class="circle c1"></div>
-      <div class="circle c2"></div>
-      <h2>Ready for your next<br>Adventure?</h2>
-      <p>Explore hidden gems, plan itineraries, and track your budget all in one place.</p>
-      <button class="cta-btn" onclick="goCreateTrip()">+ Create New Trip</button>
+      <h2 style="font-size: 2rem; margin-bottom: 10px;">Adventure Awaits</h2>
+      <p>Custom-built itineraries for over 500+ cities worldwide.</p>
+      <button class="cta-btn">+ Plan New Journey</button>
     </div>
 
-    <!-- 2. Upcoming Trips List -->
-    <div class="card trips-card">
-      <div class="card-title">
-        Upcoming Trips
-        <svg style="color:var(--secondary); cursor:pointer;" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
-      </div>
-
-      <!-- Item 1 -->
-      <div class="trip-item">
-        <div class="trip-date-box">
-          <b>02</b>
-          <span>Feb</span>
-        </div>
-        <div class="trip-info">
-          <h4>Goa Vacation</h4>
-          <p>5 Days • Flight + Hotel</p>
-          <span class="status-badge">Confirmed</span>
-        </div>
-      </div>
-
-      <!-- Item 2 -->
-      <div class="trip-item">
-        <div class="trip-date-box">
-          <b>10</b>
-          <span>Mar</span>
-        </div>
-        <div class="trip-info">
-          <h4>Ooty Weekend</h4>
-          <p>3 Days • Road Trip</p>
-          <span class="status-badge" style="background:#fff7ed; color:#c2410c;">Pending</span>
-        </div>
-      </div>
-
-      <div class="budget-section">
-        <div class="card-title" style="margin-bottom:10px; font-size:1rem;">Total Budget Spent</div>
-        <div style="margin-bottom: 5px; color:var(--text-dark); font-weight:700; font-size:1.1rem;">₹40,000 <span style="color:#94a3b8; font-weight:400; font-size:0.9rem;">/ ₹60,000</span></div>
-        <div class="budget-bar-bg">
-          <div class="budget-bar-fill"></div>
-        </div>
-        <div class="budget-stats">
-          <span>Safe spending</span>
-          <span>65%</span>
-        </div>
+    <!-- 2. Budget Mini Card -->
+    <div class="card" style="cursor: pointer;" onclick="location.href='trip budget.html'">
+      <h3 style="font-size: 1.1rem; margin-bottom: 15px;">Budget Summary</h3>
+      <div style="font-size: 1.4rem; font-weight: 700; color: var(--primary);">₹40,000</div>
+      <p style="font-size: 0.8rem; color: var(--text-light);">Spent from ₹60,000 total</p>
+      <div style="width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 15px;">
+        <div style="width: 65%; height: 100%; background: var(--secondary); border-radius: 10px;"></div>
       </div>
     </div>
 
-    <!-- 3. Recommendations (ATTRACTIVE IMAGES) -->
-    <div class="card reco-card">
-      <div class="card-title">Recommended for you</div>
+    <!-- 3. Recommendations -->
+    <div class="card" style="grid-column: 1 / -1;">
+      <h3 style="margin-bottom: 10px;">Featured Destinations</h3>
       <div class="destinations-grid">
-        
-        <!-- Bali (Visual Card) -->
-        <div class="dest-item" style="background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);">
-          <div class="dest-content">
-            <div class="tourist-icon">🏖️</div>
-            <div class="dest-name">Bali</div>
-            <div class="dest-desc">Beach Paradise</div>
-          </div>
-        </div>
-
-        <!-- Paris (Visual Card) -->
-        <div class="dest-item" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-          <div class="dest-content">
-            <div class="tourist-icon">🗼</div>
-            <div class="dest-name">Paris</div>
-            <div class="dest-desc">City of Lights</div>
-          </div>
-        </div>
-
-        <!-- Manali (Visual Card) -->
-        <div class="dest-item" style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%);">
-          <div class="dest-content">
-            <div class="tourist-icon">🏔️</div>
-            <div class="dest-name">Manali</div>
-            <div class="dest-desc">Mountain Escape</div>
-          </div>
-        </div>
-
-        <!-- Dubai (Visual Card) -->
-        <div class="dest-item" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-          <div class="dest-content">
-            <div class="tourist-icon">🏙️</div>
-            <div class="dest-name">Dubai</div>
-            <div class="dest-desc">Urban Luxury</div>
-          </div>
-        </div>
-
+        <div class="dest-item" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=300&q=80'); background-size: cover;">Bali</div>
+        <div class="dest-item" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=300&q=80'); background-size: cover;">Paris</div>
+        <div class="dest-item" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=300&q=80'); background-size: cover;">Dubai</div>
+        <div class="dest-item" style="background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1524413840807-0c3cb6fa808d?auto=format&fit=crop&w=300&q=80'); background-size: cover;">Tokyo</div>
       </div>
     </div>
 
   </main>
-
-  <script>
-    function logout() {
-      // Fade out effect
-      document.body.style.transition = 'opacity 0.5s';
-      document.body.style.opacity = '0';
-      setTimeout(() => {
-        alert("You have been logged out.");
-        location.reload(); 
-      }, 500);
-    }
-
-    function goCreateTrip() {
-      window.open('create trip.html', '_blank');
-    }
-  </script>
 
 </body>
 </html>
