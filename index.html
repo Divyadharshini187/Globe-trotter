@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lively Login - TravelApp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Import Lottie Player for the Graphics -->
+  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+
+  <style>
+    :root {
+      --primary: #6366f1; /* Indigo */
+      --secondary: #a855f7; /* Purple */
+      --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --glass-bg: rgba(255, 255, 255, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.6);
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      height: 100vh;
+      width: 100vw;
+      background: var(--bg-gradient);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- BACKGROUND BLOBS --- */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      z-index: 1;
+      opacity: 0.7;
+      animation: float 8s infinite ease-in-out;
+    }
+    .blob-1 { width: 350px; height: 350px; background: #a855f7; top: -80px; left: -80px; }
+    .blob-2 { width: 400px; height: 400px; background: #6366f1; bottom: -100px; right: -100px; animation-delay: 2s; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-20px) scale(1.05); }
+    }
+
+    /* --- CARD CONTAINER --- */
+    .card-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      min-height: 550px; /* Fixed height to prevent jumping */
+      perspective: 1000px;
+    }
+
+    .glass-card {
+      width: 100%;
+      height: 100%;
+      padding: 30px 40px;
+      background: var(--glass-bg);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: transform 0.4s ease;
+    }
+
+    /* --- AVATAR GRAPHIC --- */
+    .avatar-wrapper {
+      width: 180px;
+      height: 180px;
+      margin: -60px auto 10px auto; /* Pull it up slightly */
+      position: relative;
+    }
+
+    h2 { color: var(--text-dark); font-weight: 700; margin-bottom: 5px; }
+    .subtitle { color: var(--text-light); font-size: 0.9rem; margin-bottom: 25px; }
+
+    /* --- INPUTS --- */
+    .input-group {
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .input-group:focus-within {
+      background: white;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+      transform: translateY(-2px);
+    }
+    .input-icon { color: var(--text-light); margin-right: 12px; width: 20px; height: 20px; }
+    
+    input { border: none; background: transparent; outline: none; width: 100%; color: var(--text-dark); }
+
+    /* --- BUTTONS --- */
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 10px 20px -10px rgba(99, 102, 241, 0.5);
+    }
+    .btn-primary:hover {
+      background: #4f46e5;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 25px -10px rgba(79, 70, 229, 0.6);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-dark);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.4);
+      transform: translateY(-3px);
+    }
+
+    .forgot-link {
+      display: block;
+      text-align: center;
+      margin: 15px 0;
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-bottom: 10px;
+      padding: 0;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+
+    .error-message {
+      color: #ef4444;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    </style>
+</head>
+<body>
+    <!-- Background Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <!-- Glassmorphic Card -->
+    <div class="card-container">
+      <div class="glass-card login-card">
+        <div class="avatar-wrapper">
+          <dotlottie-player 
+            src="https://assets10.lottiefiles.com/packages/lf20_jcikwtux.json"  
+            background="transparent"  
+            speed="1"  
+            style="width: 100%; height: 100%;"  
+            loop  
+            autoplay>
+          </dotlottie-player>
+        </div>
+        <h2>Welcome Back!</h2>
+        <p class="subtitle">Log in to continue your adventure</p>
+
+        <div class="input-group">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-18 0v1.5a2.5 2.5 0 005 0V12" /></svg>
+          <input id="email" type="email" placeholder="Email Address" />
+        </div>
+
+        <div class="input-group">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0-1.657-1.343-3-3-3s-3 1.343-3 3m6 0c0 1.657 1.343 3 3 3s3-1.343 3-3m-6 0v10m6-10v10M5 21h14a2 2 0 002-2v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7a2 2 0 002 2z" /></svg>
+          <input id="password" type="password" placeholder="Password" />
+        </div>  
+        <button class="btn btn-primary" onclick="login()">Log In</button>
+        <a href="#" class="forgot-link" onclick="showForgotPassword()">Forgot Password?</a>
+        <button class="btn btn-secondary">Create Account</button>
+      </div>
+
+      <!-- Forgot Password Card -->
+      <div class="glass-card forgot-card" id="forgotCard" style="display: none;">
+        <button class="back-btn" onclick="showLogin()">&larr; Back to Login</button>
+        <h2>Reset Password</h2>
+        <p class="subtitle">Enter your email to receive a reset link</p>
+
+        <div class="input-group">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+          <input id="resetEmail" type="email" placeholder="Email Address" />
+        </div>
+        <button class="btn btn-primary" onclick="sendResetLink()">Send Reset Link</button>
+      </div>
+
+      <!-- Reset Password Card -->
+      <div class="glass-card reset-card" id="resetCard" style="display: none;">
+        <button class="back-btn" onclick="showLogin()">&larr; Back to Login</button>
+        <h2>Set New Password</h2>
+        <p class="subtitle">Enter your new password</p>
+
+        <div class="input-group">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          <input id="newPassword" type="password" placeholder="New Password" />
+        </div>
+
+        <div class="input-group">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+          <input id="confirmPassword" type="password" placeholder="Confirm Password" />
+        </div>
+
+        <div id="passwordError" class="error-message" style="display: none; color: #ef4444; font-size: 0.9rem; margin-bottom: 10px;">Passwords do not match</div>
+
+        <button class="btn btn-primary" onclick="resetPassword()">Update Password</button>
+      </div>
+
+      <script>
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!email || !password) {
+                alert("Please fill in both email and password.");
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            
+            // Simulate login process
+            const btn = document.querySelector('.login-card .btn-primary');
+            const originalText = btn.innerText;
+            btn.innerText = "Logging in...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.innerText = "Success!";
+                btn.style.background = "#10b981";
+                
+                setTimeout(() => {
+                    window.location.href = "home.html";
+                }, 800);
+            }, 1500);
+        }
+
+        function showForgotPassword() {
+            document.querySelector('.login-card').style.display = 'none';
+            document.getElementById('forgotCard').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.querySelector('.login-card').style.display = 'block';
+            document.getElementById('forgotCard').style.display = 'none';
+            document.getElementById('resetCard').style.display = 'none';
+        }
+
+        function sendResetLink() {
+            const email = document.getElementById('resetEmail').value;
+            
+            if (!email || !email.includes('@')) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            
+            // Simulate sending reset link
+            const btn = document.querySelector('#forgotCard .btn-primary');
+            const originalText = btn.innerText;
+            btn.innerText = "Sending...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.innerText = "✓ Link Sent!";
+                btn.style.background = "#10b981";
+                
+                setTimeout(() => {
+                    // Simulate user clicking the link
+                    const proceed = confirm(`A reset link has been sent to ${email}.\n\nClick OK to simulate clicking the reset link.`);
+                    
+                    if (proceed) {
+                        document.getElementById('forgotCard').style.display = 'none';
+                        document.getElementById('resetCard').style.display = 'block';
+                        btn.innerText = originalText;
+                        btn.style.background = "";
+                        btn.style.opacity = "1";
+                    }
+                }, 1000);
+            }, 2000);
+        }
+
+        function resetPassword() {
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            const errorMsg = document.getElementById('passwordError');
+            
+            if (!newPass) {
+                alert("Please enter a new password.");
+                return;
+            }
+            
+            if (newPass !== confirmPass) {
+                errorMsg.style.display = 'block';
+                return;
+            } else {
+                errorMsg.style.display = 'none';
+            }
+            
+            // Simulate password update
+            const btn = document.querySelector('#resetCard .btn-primary');
+            const originalText = btn.innerText;
+            btn.innerText = "Updating...";
+            btn.style.opacity = "0.7";
+            
+            setTimeout(() => {
+                btn.innerText = "✓ Password Updated!";
+                btn.style.background = "#10b981";
+                
+                setTimeout(() => {
+                    alert("Your password has been successfully updated! You can now log in with your new password.");
+                    showLogin();
+                    btn.innerText = originalText;
+                    btn.style.background = "";
+                    btn.style.opacity = "1";
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('confirmPassword').value = '';
+                }, 1000);
+            }, 1500);
+        }
+      </script>
+
+    </div>
+</body>
+
+</html>

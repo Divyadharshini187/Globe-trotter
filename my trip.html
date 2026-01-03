@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Tour Itinerary</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lottie Player for Animations -->
+  <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --secondary: #a855f7;
+      --bg-gradient: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      --glass-bg: rgba(255, 255, 255, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.7);
+      --text-dark: #1e293b;
+      --text-light: #475569;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      padding-bottom: 120px;
+      overflow-x: hidden;
+    }
+
+    /* --- HERO HEADER --- */
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid white;
+    }
+    .hero h1 {
+      font-size: 2rem;
+      background: linear-gradient(to right, #4f46e5, #9333ea);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 800;
+    }
+    .hero p { color: var(--text-light); font-size: 0.9rem; margin-top: 5px; }
+
+    /* --- COUNTRY SECTION --- */
+    .country-section {
+      margin-top: 40px;
+      position: relative;
+    }
+
+    /* Country Header with Avatar */
+    .country-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      position: relative;
+      padding: 0 20px;
+    }
+    
+    .ch-avatar {
+      width: 100px;
+      height: 100px;
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+      animation: float 6s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .ch-info h2 { font-size: 2.2rem; font-weight: 800; color: white; text-shadow: 0 4px 10px rgba(0,0,0,0.2); line-height: 1; }
+    .ch-info span { font-weight: 600; font-size: 0.9rem; color: #1e293b; text-transform: uppercase; letter-spacing: 2px; display: block; }
+
+    /* The Timeline Line */
+    .country-timeline {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+    }
+    .country-timeline::before {
+      content: '';
+      position: absolute;
+      left: 35px;
+      top: 0; bottom: 0;
+      width: 4px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 4px;
+    }
+
+    /* --- CARDS --- */
+    .stop-card {
+      position: relative;
+      margin-bottom: 30px;
+      padding-left: 40px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+    .stop-card.visible { opacity: 1; transform: translateY(0); }
+
+    .timeline-dot {
+      position: absolute;
+      left: 7px; top: 25px;
+      width: 16px; height: 16px;
+      background: var(--primary);
+      border: 3px solid white;
+      border-radius: 50%;
+      z-index: 2;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.3);
+    }
+
+    .glass-box {
+      background: var(--glass-bg);
+      backdrop-filter: blur(15px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      transition: transform 0.3s;
+    }
+    .glass-box:hover { transform: scale(1.02); background: rgba(255,255,255,0.7); }
+
+    .city-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(0,0,0,0.05); padding-bottom: 8px;}
+    .city-title h3 { font-size: 1.2rem; color: var(--text-dark); }
+    .stay-badge { font-size: 0.75rem; background: white; padding: 4px 10px; border-radius: 12px; font-weight: 600; color: var(--primary); }
+
+    .activity-row { display: flex; justify-content: space-between; font-size: 0.9rem; margin-top: 8px; color: var(--text-light); }
+    .price-tag { font-weight: 700; color: var(--text-dark); }
+
+    /* --- FLOATING TOTAL --- */
+    .floating-total {
+      position: fixed;
+      bottom: 25px; left: 50%;
+      transform: translateX(-50%);
+      background: #1e1b4b;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      z-index: 100;
+      width: 90%; max-width: 400px;
+      justify-content: space-between;
+    }
+    .ft-label { font-size: 0.8rem; opacity: 0.7; }
+    .ft-amount { font-size: 1.4rem; font-weight: 700; color: #4ade80; }
+
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <h1>World Tour 2026 ✈️</h1>
+    <p>3 Countries • 8 Cities • 1 Unforgettable Journey</p>
+  </div>
+
+  <div id="itinerary-wrapper">
+    <!-- Content injected via JS -->
+  </div>
+
+  <div class="floating-total">
+    <div>
+      <div class="ft-label">Total Estimated Cost</div>
+      <div style="font-size:0.75rem; color:#94a3b8">Flights + Stays + Activities</div>
+    </div>
+    <div class="ft-amount" id="grand-total">₹0</div>
+  </div>
+
+  <script>
+    // --- MOCK DATA FOR MULTIPLE COUNTRIES ---
+    const worldTrip = [
+      {
+        country: "Japan",
+        flag: "🇯🇵",
+        themeColor: "#f472b6", // Pink for Sakura
+        avatarLottie: "https://lottie.host/4a5b6d7e-8f9c-4a1b-2c3d-4e5f6g7h8i9j/anime-style.json", // Fallback simulated
+        // Using a reliable generic "Cute Character" Lottie
+        avatarSrc: "https://lottie.host/5672d96c-8438-4c12-9213-90d6435c246f/hP5s8Q82sI.json", 
+        stops: [
+          { city: "Tokyo", stay: "3 Nights", acts: [ {name: "TeamLab Planets", cost: 3500}, {name: "Shibuya Crossing", cost: 0} ] },
+          { city: "Kyoto", stay: "2 Nights", acts: [ {name: "Kimono Rental", cost: 4000}, {name: "Tea Ceremony", cost: 2500} ] },
+          { city: "Osaka", stay: "2 Nights", acts: [ {name: "Universal Studios", cost: 9500} ] }
+        ]
+      },
+      {
+        country: "France",
+        flag: "🇫🇷",
+        themeColor: "#3b82f6", // Blue for French Flag
+        // Using a "Traveler/Photographer" Lottie
+        avatarSrc: "https://lottie.host/8816f059-4503-4f51-872f-578964c7038e/2L5wz8F3Wj.json",
+        stops: [
+          { city: "Paris", stay: "4 Nights", acts: [ {name: "Eiffel Tower Summit", cost: 8500}, {name: "Louvre Museum", cost: 1800} ] },
+          { city: "Nice", stay: "2 Nights", acts: [ {name: "French Riviera Boat", cost: 5000} ] }
+        ]
+      },
+      {
+        country: "India",
+        flag: "🇮🇳",
+        themeColor: "#f97316", // Orange
+        // Using a generic happy character
+        avatarSrc: "https://lottie.host/9338006e-8212-4091-b3b6-27756f183701/pY9tJ2q24u.json",
+        stops: [
+          { city: "New Delhi", stay: "2 Nights", acts: [ {name: "Red Fort Tour", cost: 500}, {name: "Street Food Walk", cost: 1200} ] },
+          { city: "Jaipur", stay: "2 Nights", acts: [ {name: "Amber Fort Elephant", cost: 2000} ] },
+          { city: "Agra", stay: "1 Night", acts: [ {name: "Taj Mahal Entry", cost: 1100} ] }
+        ]
+      }
+    ];
+
+    // --- RENDER LOGIC ---
+    function renderWorldTrip() {
+      const container = document.getElementById('itinerary-wrapper');
+      let grandTotal = 0;
+
+      worldTrip.forEach((leg, index) => {
+        // 1. Create Country Section
+        const section = document.createElement('div');
+        section.className = 'country-section';
+
+        // 2. Create Header with Avatar
+        // Note: We use the `dotlottie-player` component for high quality animation
+        section.innerHTML = `
+          <div class="country-header">
+            <div class="ch-info" style="text-align:right;">
+              <span>Leg 0${index + 1}</span>
+              <h2 style="color:${leg.themeColor}">${leg.country}</h2>
+            </div>
+            <div class="ch-avatar">
+              <dotlottie-player src="${leg.avatarSrc}" background="transparent" speed="1" loop autoplay style="width: 100%; height: 100%;"></dotlottie-player>
+              <div style="position: absolute; font-size: 2rem; opacity: 0.7;">${leg.flag}</div>
+            </div>
+            <div style="font-size:3rem; line-height:1;">${leg.flag}</div>
+          </div>
+          <div class="country-timeline" id="timeline-${index}"></div>
+        `;
+        container.appendChild(section);
+
+        // 3. Render Stops for this country
+        const timeline = document.getElementById(`timeline-${index}`);
+        
+        leg.stops.forEach((stop, i) => {
+          let stopCost = 0;
+          stop.acts.forEach(a => stopCost += a.cost);
+          grandTotal += stopCost;
+
+          const card = document.createElement('div');
+          card.className = 'stop-card';
+          // Alternate sides or just list? Let's do a clean list.
+          
+          const actsHTML = stop.acts.map(act => `
+            <div class="activity-row">
+              <span>▫️ ${act.name}</span>
+              <span class="price-tag">${act.cost > 0 ? '₹' + act.cost : 'Free'}</span>
+            </div>
+          `).join('');
+
+          card.innerHTML = `
+            <div class="timeline-dot" style="background:${leg.themeColor}"></div>
+            <div class="glass-box">
+              <div class="city-title">
+                <h3>${stop.city}</h3>
+                <span class="stay-badge">${stop.stay}</span>
+              </div>
+              <div>${actsHTML}</div>
+              <div style="margin-top:10px; border-top:1px dashed #ccc; padding-top:5px; text-align:right; font-size:0.85rem;">
+                Est. Cost: <b>₹${stopCost}</b>
+              </div>
+            </div>
+          `;
+          
+          timeline.appendChild(card);
+        });
+      });
+
+      // Animate Total
+      animateValue(document.getElementById('grand-total'), 0, grandTotal, 2000);
+      
+      // Trigger scroll animations
+      setupScrollObserver();
+    }
+
+    // --- UTILITIES ---
+    function animateValue(obj, start, end, duration) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = "₹ " + Math.floor(progress * (end - start) + start).toLocaleString();
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // Scroll Observer for "Slide In" effect
+    function setupScrollObserver() {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      // Observe all cards
+      document.querySelectorAll('.stop-card').forEach(card => {
+        observer.observe(card);
+        // If card is already visible on load, trigger animation immediately
+        if (card.getBoundingClientRect().top < window.innerHeight) {
+          setTimeout(() => card.classList.add('visible'), 100);
+        }
+      });
+    }
+
+    // Init
+    window.addEventListener('DOMContentLoaded', renderWorldTrip);
+
+  </script>
+</body>
+</html>
