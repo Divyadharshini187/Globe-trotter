@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skyline Planner | Interactive Trip Builder</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-purple: #9f7aea;
+            --secondary-blue: #4299e1;
+            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --text-main: #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-purple);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header p {
+            color: var(--secondary-blue);
+            font-weight: 500;
+        }
+
+        /* Main Container */
+        .planner-container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* Add Stop Button */
+        .btn-add-stop {
+            background: linear-gradient(to right, var(--primary-purple), var(--secondary-blue));
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto 30px auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(159, 122, 234, 0.4);
+        }
+
+        .btn-add-stop:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(159, 122, 234, 0.6);
+        }
+
+        /* Stops List */
+        .stops-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .stop-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 20px;
+            padding: 25px;
+            position: relative;
+            animation: slideIn 0.5s ease-out forwards;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+        }
+
+        .stop-info h2 {
+            color: var(--primary-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .stop-dates {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        /* Activities Section */
+        .activities-section {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            background: white;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .activity-item i {
+            margin-right: 10px;
+            color: var(--secondary-blue);
+        }
+
+        .add-activity-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .add-activity-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .btn-small {
+            padding: 8px 12px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-save-activity {
+            background: var(--secondary-blue);
+            color: white;
+        }
+
+        /* Controls */
+        .stop-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .control-btn {
+            background: white;
+            border: 1px solid #e2e8f0;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #4a5568;
+            transition: all 0.2s;
+        }
+
+        .control-btn:hover {
+            background: var(--primary-purple);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #f56565 !important;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #edf2f7;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary-purple);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Floating Graphics */
+        .graphic {
+            position: fixed;
+            z-index: -1;
+            opacity: 0.5;
+            filter: blur(2px);
+            animation: float 6s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Shapes -->
+    <i class="fa-solid fa-plane graphic" style="top: 10%; left: 5%; font-size: 4rem; color: #9f7aea;"></i>
+    <i class="fa-solid fa-cloud graphic" style="top: 20%; right: 10%; font-size: 5rem; color: #4299e1; animation-delay: 2s;"></i>
+    <i class="fa-solid fa-earth-americas graphic" style="bottom: 10%; left: 8%; font-size: 4rem; color: #cbd5e0; animation-delay: 1s;"></i>
+
+    <header>
+        <h1>Skyline Planner</h1>
+        <p>Your journey, beautifully organized</p>
+    </header>
+
+    <div class="planner-container">
+        <button class="btn-add-stop" onclick="openModal()">
+            <i class="fa-solid fa-plus"></i> Add New Stop
+        </button>
+
+        <div id="stopsList" class="stops-list">
+            <!-- Stop Cards will be injected here -->
+        </div>
+    </div>
+
+    <!-- Modal for adding stop -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <h2 style="margin-bottom: 20px; color: var(--primary-purple);">Add Destination</h2>
+            <div class="form-group">
+                <label>City Name</label>
+                <input type="text" id="cityInput" placeholder="e.g. Paris, France">
+            </div>
+            <div class="form-group">
+                <label>Start Date</label>
+                <input type="date" id="startDate">
+            </div>
+            <div class="form-group">
+                <label>End Date</label>
+                <input type="date" id="endDate">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-add-stop" style="margin:0; flex:1;" onclick="addStop()">Save Stop</button>
+                <button class="btn-small" style="background:#edf2f7;" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let stops = [];
+
+        function openModal() {
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            clearInputs();
+        }
+
+        function clearInputs() {
+            document.getElementById('cityInput').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+        }
+
+        function addStop() {
+            const city = document.getElementById('cityInput').value;
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+
+            if (!city || !start || !end) {
+                alert("Please fill in all fields");
+                return;
+            }
+
+            const newStop = {
+                id: Date.now(),
+                city: city,
+                dates: `${formatDate(start)} - ${formatDate(end)}`,
+                activities: []
+            };
+
+            stops.push(newStop);
+            renderStops();
+            closeModal();
+        }
+
+        function formatDate(dateStr) {
+            const options = { month: 'short', day: 'numeric' };
+            return new Date(dateStr).toLocaleDateString(undefined, options);
+        }
+
+        function deleteStop(id) {
+            stops = stops.filter(stop => stop.id !== id);
+            renderStops();
+        }
+
+        function moveStop(index, direction) {
+            if (direction === 'up' && index > 0) {
+                [stops[index], stops[index-1]] = [stops[index-1], stops[index]];
+            } else if (direction === 'down' && index < stops.length - 1) {
+                [stops[index], stops[index+1]] = [stops[index+1], stops[index]];
+            }
+            renderStops();
+        }
+
+        function addActivity(stopId) {
+            const input = document.getElementById(`act-input-${stopId}`);
+            const activityText = input.value;
+            
+            if (activityText) {
+                const stop = stops.find(s => s.id === stopId);
+                stop.activities.push(activityText);
+                input.value = '';
+                renderStops();
+            }
+        }
+
+        function renderStops() {
+            const container = document.getElementById('stopsList');
+            container.innerHTML = '';
+
+            stops.forEach((stop, index) => {
+                const card = document.createElement('div');
+                card.className = 'stop-card';
+                card.innerHTML = `
+                    <div class="stop-info">
+                        <h2><i class="fa-solid fa-location-dot"></i> ${stop.city}</h2>
+                        <div class="stop-dates"><i class="fa-solid fa-calendar-days"></i> ${stop.dates}</div>
+                        
+                        <div class="activities-section">
+                            <div id="activities-${stop.id}">
+                                ${stop.activities.map(act => `
+                                    <div class="activity-item">
+                                        <i class="fa-solid fa-check-circle"></i> ${act}
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="add-activity-input">
+                                <input type="text" id="act-input-${stop.id}" placeholder="Add activity...">
+                                <button class="btn-small btn-save-activity" onclick="addActivity(${stop.id})">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stop-controls">
+                        <button class="control-btn" onclick="moveStop(${index}, 'up')"><i class="fa-solid fa-chevron-up"></i></button>
+                        <button class="control-btn" onclick="moveStop(${index}, 'down')"><i class="fa-solid fa-chevron-down"></i></button>
+                        <button class="control-btn btn-delete" onclick="deleteStop(${stop.id})"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // Initialize with a sample stop
+        window.onload = () => {
+            stops.push({
+                id: 1,
+                city: "Santorini, Greece",
+                dates: "Jun 12 - Jun 15",
+                activities: ["Sunset Dinner at Oia", "Boat Tour", "Black Sand Beach"]
+            });
+            renderStops();
+        };
+    </script>
+</body>
+</html>
